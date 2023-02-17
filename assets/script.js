@@ -30,11 +30,17 @@ function preload() {
     })
 }
 
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+    cam.setViewport([0,0,windowWidth, windowHeight]);
+  }
+  
+
 
 function setup() {
     createCanvas(windowWidth, windowHeight, WEBGL);
     cam = new Dw.EasyCam(this._renderer, {distance : 900});
-    document.oncontextmenu = ()=>false;
+    //document.oncontextmenu = ()=>false;
     smooth();
     setAttributes('antialias', true);
     textFont(myFont);
@@ -91,15 +97,14 @@ function drawText3D(z) {
 
 
 function draw() {
+    perspective(60 * PI/180, width/height, 1, 5000);
     background(0,0.3)
 
     for (let z = -10; z < 20; z+=5) {
         drawText3D(z)
     }
 
-    
-    push();
-    
+
     stroke(125);
     fill(125);
     strokeWeight(1);
@@ -107,10 +112,6 @@ function draw() {
     text(ddisplay_id, 0, 0);
     translate(-width / 2, -height / 2);
 
-    
-
-    
-    pop();
 
     cam.beginHUD();
     draw_connection_state();
@@ -174,8 +175,6 @@ function byt(data) {
     try {
         let agenda = JSON.parse(data);
 
-        let list = document.getElementById('agenda');
-        list.innerHTML = "";
 
         console.log(agenda);
 
@@ -184,7 +183,6 @@ function byt(data) {
             li.innerText = item["Title"];
             li.setAttribute("isActive", item["IsActive"]);
 
-            list.appendChild(li);
         }
 
     } catch (error) {
